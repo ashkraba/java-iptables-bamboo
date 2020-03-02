@@ -1,0 +1,8 @@
+---
+- name: create user for bamboo
+  user:
+    name: "{{ user_name }}"
+    uid: "{{ user_id }}"
+    create_home: true
+
+# tasks file for user

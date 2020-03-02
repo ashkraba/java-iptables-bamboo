@@ -1,0 +1,11 @@
+---
+- name: install openjdk 1.8
+  yum:
+    name: "java-{{java_vers}}-openjdk"
+    state: present
+
+- name: set alternatives for java
+  shell: "export JAVA_HOME=$(alternatives --list |  grep -w "jre_{{java_vers}}"  | awk '{print $3}')/bin/java"
+     alternatives --set java $JAVA_HOME
+     echo export JAVA_HOME=$JAVA_HOME >> /etc/bashrc
+# tasks file for java

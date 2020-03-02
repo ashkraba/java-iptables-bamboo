@@ -1,0 +1,5 @@
+---
+bamboo_url: https://product-downloads.atlassian.com/software/bamboo/downloads/atlassian-bamboo-6.10.4.tar.gz
+bamboo_dir: /opt/bamboo
+bamboo_home: "/home/{{user_name}}"
+# defaults file for bamboo

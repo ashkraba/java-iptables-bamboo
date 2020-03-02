@@ -1,0 +1,51 @@
+---
+- name: download bamboo
+  get_url:
+    url: "{{bamboo_url}}"
+    dest: /tmp
+
+- name: get bamboo version
+  shell: basename -s .tar.gz /tmp/*bamboo*
+  register: bamboo_ver
+
+- name: create dir for bamboo
+  file:
+    path: "{{bamboo_dir}}"
+    owner: "{{user_name}}"
+    state: directory
+    mode: '0755'
+
+- name: extract bamboo
+  unarchive:
+    src: "/tmp/{{bamboo_ver.stdout}}.tar.gz"
+    dest: /tmp
+    remote_src: yes
+
+- name: copy bamboo files
+  copy:
+    src: "/tmp/{{bamboo_ver.stdout}}/"
+    dest: "{{bamboo_dir}}/"
+    remote_src: yes
+    directory_mode: yes
+    owner: "{{user_name}}"
+    mode: '0755'
+
+- name: set bamboo home dir
+  lineinfile:
+    path: "/opt/bamboo/atlassian-bamboo/WEB-INF/classes/bamboo-init.properties"
+    regexp: '^#bamboo.home='
+    line: "bamboo.home={{bamboo_home}}"
+
+- name: generate bamboo unit
+  template:
+    src: bamboo.j2
+    dest: /lib/systemd/system/bamboo.service
+    owner: "{{user_name}}"
+
+- name: start and enable bamboo
+  systemd:
+    name: bamboo
+    state: started
+    enabled: yes
+    daemon_reload: yes
+# tasks file for bamboo
